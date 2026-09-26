@@ -2293,33 +2293,26 @@ function removeRealtimeMember(member) {
             `.seat[data-seat="${member.seat_number}"]`
         );
 
-
     if (!seat) {
         return;
     }
 
+    /*
+        Clear the seat.
 
-    /* Only clear if this member owns the seat */
-
-    if (
-        seat.dataset.userId !==
-        member.user_id
-    ) {
-
-        return;
-    }
-
+        We don't rely only on userId here because
+        this seat may have been loaded from Supabase
+        when another user entered the room.
+    */
 
     const circle =
         seat.querySelector(
             ".seat-circle"
         );
 
-
     circle.classList.remove(
         "occupied"
     );
-
 
     circle.innerHTML = `
         <span class="seat-microphone">
@@ -2343,7 +2336,6 @@ function removeRealtimeMember(member) {
         name.remove();
     }
 
-
     if (gift) {
         gift.remove();
     }
@@ -2355,8 +2347,14 @@ function removeRealtimeMember(member) {
     delete seat.dataset.userId;
     delete seat.dataset.memberId;
     delete seat.dataset.username;
-}
+    delete seat.dataset.gifts;
 
+
+    console.log(
+        "Seat released:",
+        member.seat_number
+    );
+}
 
 /* =========================================================
    UPDATE MEMBER
